@@ -400,6 +400,7 @@ class TFTrainer:
         logger.info("***** Running training *****")
         logger.info("  Num examples = %d", self.num_train_examples)
         logger.info("  Num Epochs = %d", epochs)
+        logger.info("  Steps per Epochs = %d", steps_per_epoch)
         logger.info("  Instantaneous batch size per device = %d", self.args.per_device_train_batch_size)
         logger.info(
             "  Total train batch size (w. parallel, distributed & accumulation) = %d", self.args.train_batch_size
@@ -413,7 +414,7 @@ class TFTrainer:
                 self._past = None
             for step, training_loss in enumerate(self._training_steps(train_ds, optimizer)):
                 self.global_step = iterations.numpy()
-                logger.info("Global Step: %s, Step: %s  Loss: %s", self.global_step, step, training_loss.numpy())
+                logger.info("Epoch: %s Global Step: %s, Step: %s  Loss: %s", epoch_iter, self.global_step, step, training_loss.numpy())
                 self.epoch_logging = epoch_iter - 1 + (step + 1) / steps_per_epoch
 
                 if self.args.debug:
