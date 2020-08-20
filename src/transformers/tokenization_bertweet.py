@@ -242,10 +242,18 @@ class BertweetTokenizer(PreTrainedTokenizer):
             text = self.normalizeTweet(text)
         return self.bpe.apply([text])[0].split()
 
-    def convert_tokens_to_ids(self, tokens):
-        """ Converts a list of str tokens into a list of ids using the vocab."""
-        return self.vocab.encode_line(" ".join(tokens), append_eos=False, add_if_not_exist=False).long().tolist()
+    # def convert_tokens_to_ids(self, tokens):
+    #     """ Converts a list of str tokens into a list of ids using the vocab."""
+    #     return self.vocab.encode_line(" ".join(tokens), append_eos=False, add_if_not_exist=False).long().tolist()
 
+    def _convert_token_to_id(self, token):
+        #""" Converts a list of str tokens into a list of ids using the vocab."""
+        #return self.vocab.encode_line(" ".join(tokens), append_eos=False, add_if_not_exist=False).long().tolist()
+        return self.vocab.encode_line(token, append_eos=False, add_if_not_exist=False).long().tolist()[0]
+    
+    @property
+    def vocab_size(self) -> int:
+        return len(self.vocab)
 
 SPACE_NORMALIZER = re.compile(r"\s+")
 def tokenize_line(line):
