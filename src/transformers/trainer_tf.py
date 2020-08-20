@@ -413,6 +413,7 @@ class TFTrainer:
                 self._past = None
             for step, training_loss in enumerate(self._training_steps(train_ds, optimizer)):
                 self.global_step = iterations.numpy()
+                logger.info("Global Step: %s, Step: %s  Loss: %s", self.global_step, step, training_loss)
                 self.epoch_logging = epoch_iter - 1 + (step + 1) / steps_per_epoch
 
                 if self.args.debug:
@@ -429,7 +430,9 @@ class TFTrainer:
                         )
 
                 if self.args.evaluate_during_training and self.global_step % self.args.eval_steps == 0:
-                    self.evaluate()
+                    metrics = self.evaluate()
+                    for metric, score in metrics:
+                        logging.info("Metric %s:%s", metric, score)
 
                 if (
                     self.global_step % self.args.logging_steps == 0
